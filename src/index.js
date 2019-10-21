@@ -45,8 +45,7 @@ const connectionUrl =
     ? process.env.MONGODB_URL_PROD
     : process.env.MONGODB_URL_DEV;
 mongoose.connect(
-  "mongodb://vgg-career1:vgg-career1@ds337418.mlab.com:37418/career-portal-backend",
-  {
+connectionUrl,  {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true,
