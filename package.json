@@ -1,0 +1,48 @@
+{
+  "name": "career-portal-backend",
+  "version": "1.0.0",
+  "description": "backend api server for career portal",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf build && mkdir build",
+    "build-babel": "babel -d ./build ./src -s",
+    "build": "npm run clean && npm run build-babel",
+    "start": "npm run build && node ./build/index.js",
+    "dev": "nodemon --watch src --delay 250ms --exec babel-node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://qutech@bitbucket.org/qutech/career-portal-backend.git"
+  },
+  "author": "Gerald Anosike",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/qutech/career-portal-backend#readme",
+  "dependencies": {
+    "@sendgrid/mail": "^6.4.0",
+    "argon2": "^0.24.0",
+    "axios": "^0.19.0",
+    "babel-preset-env": "^1.7.0",
+    "body-parser": "^1.18.3",
+    "cloudinary": "^1.14.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^7.0.0",
+    "express": "^4.17.1",
+    "express-validator": "^5.3.1",
+    "helmet": "^3.21.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.5.1",
+    "mongoose-paginate": "^5.0.3",
+    "mongoose-unique-validator": "^2.0.3",
+    "morgan": "^1.9.1",
+    "multer": "^1.4.2",
+    "validator": "^11.1.0",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-add-module-exports": "^1.0.0",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0"
+  }
+}
