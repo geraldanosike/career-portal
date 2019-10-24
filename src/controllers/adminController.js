@@ -1,4 +1,5 @@
 import sgMail from "@sendgrid/mail";
+import * as argon2 from "argon2";
 import Admin from "../models/admin";
 import BaseRepository from "../repositories/baseRepository";
 import dotenv from "dotenv";
@@ -24,21 +25,25 @@ class adminController {
       };
       const findEmail = await Admin.findOne({ email });
 
-      if (findEmail) return res.status(400).send("Admin already exists");
+      if (findEmail) return res.status(400).send("User already exists");
 
       const createAdmin = await Admin.create(options);
       const token = await createAdmin.Token();
 
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-        const msg = {
-          to: req.body.email,
-          from: "vgg-careers@venturegardengroup.com",
-          subject: `Welcome Admin`,
-          text: "Enjoy our platform",
-          html: `Welcome ${req.body.fullname}, You now have administrative privilege. Good Luck`
-        };
-        await sgMail.send(msg);
-      return res.status(201).send({email: createAdmin.email, fullname: createAdmin.fullname, tokens: createAdmin.tokens});
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      const msg = {
+        to: req.body.email,
+        from: "vgg-careers@venturegardengroup.com",
+        subject: `Welcome Admin`,
+        text: "Enjoy our platform",
+        html: `Welcome ${req.body.fullname}, You now have administrative privilege. Good Luck`
+      };
+      await sgMail.send(msg);
+      return res.status(201).send({
+        email: createAdmin.email,
+        fullname: createAdmin.fullname,
+        tokens: createAdmin.tokens
+      });
     } catch (error) {
       return res.status(500).send(error.message);
     }
@@ -58,19 +63,60 @@ class adminController {
 
       const loginAdmins = await Admin.findByCredentials(email, password);
       const token = await loginAdmins.Token();
-      if (!loginAdmins) {
-        return res.status(404).send({ error: "invalid password or email" });
-      }
+
       if (loginAdmins) {
         return res
           .status(200)
           .send({ message: "Logged in successfully", token });
+      }
+
+      if (!loginAdmins.email) {
+        return res.status(404).send({ error: "invalid password or email" });
       }
     } catch (error) {
       return res.status(500).send(error.message);
     }
   }
 
+  /**
+   * @description change user password
+   * @param  {object} req
+   * @param {object} res
+   * @returns {object} a user's password
+   * @memberof userController
+   */
+
+  static async changeUserPassword(req, res) {
+    try {
+      const { userId } = req.params;
+      const { password } = req.body;
+
+      const hashpassword = await argon2.hash(password);
+
+      const updatePassword = await Admin.findByIdAndUpdate(
+        { _id: userId },
+        {
+          $set: {
+            password: hashpassword
+          }
+        },
+        {
+          new: true
+        }
+      );
+      if (!updatePassword) {
+        return res.status(400).json({ error: "User does not exist" });
+      }
+      return res.status(201).json({
+        message: "Password updated successfully",
+        email: updatePassword.email,
+        fullname: updatePassword.fullname,
+        tokens: updatePassword.tokens
+      });
+    } catch (error) {
+      return res.status(500).send(error.message);
+    }
+  }
   /**
    * @description Get all User
    * @param  {object} req

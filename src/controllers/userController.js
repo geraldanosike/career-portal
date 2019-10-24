@@ -1,9 +1,10 @@
+import * as argon2 from "argon2";
 import sgMail from "@sendgrid/mail";
 import User from "../models/users";
-import BaseRepository from '../repositories/baseRepository';
+import BaseRepository from "../repositories/baseRepository";
 import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 class userController {
   /**
    * @description creates a new User
@@ -29,16 +30,20 @@ class userController {
       const createUser = await User.create(options);
       const token = await createUser.Token();
 
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-        const msg = {
-          to: req.body.email,
-          from: "vgg-careers@venturegardengroup.com",
-          subject: `Welcome ${req.body.fullname}`,
-          text: "Enjoy our platform",
-          html: `Welcome ${req.body.fullname}, we are glad to have you on our platform. Login , browse and apply for your dream job`
-        };
-        await sgMail.send(msg);
-      return res.status(201).send({email: createUser.email, fullname: createUser.fullname, tokens: createUser.tokens});
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      const msg = {
+        to: req.body.email,
+        from: "vgg-careers@venturegardengroup.com",
+        subject: `Welcome ${req.body.fullname}`,
+        text: "Enjoy our platform",
+        html: `Welcome ${req.body.fullname}, we are glad to have you on our platform. Login , browse and apply for your dream job`
+      };
+      await sgMail.send(msg);
+      return res.status(201).send({
+        email: createUser.email,
+        fullname: createUser.fullname,
+        tokens: createUser.tokens
+      });
     } catch (error) {
       return res.status(500).send(error.message);
     }
@@ -129,6 +134,48 @@ class userController {
     try {
       const { currentUser } = req;
       res.send(currentUser);
+    } catch (error) {
+      return res.status(500).send(error.message);
+    }
+  }
+
+  /**
+   * @description change user password
+   * @param  {object} req
+   * @param {object} res
+   * @returns {object} a user's password
+   * @memberof userController
+   */
+
+  static async changeUserPassword(req, res) {
+    try {
+      const { userId } = req.params;
+      const { password } = req.body;
+
+      const hashpassword = await argon2.hash(password);
+
+      const updatePassword = await User.findByIdAndUpdate(
+        { _id: userId },
+        {
+          $set: {
+            password: hashpassword
+          }
+        },
+        {
+          new: true
+        }
+      );
+      if (!updatePassword) {
+        return res.status(400).json({ error: "User does not exist" });
+      }
+      return res
+        .status(201)
+        .json({
+          message: "Password updated successfully",
+          email: updatePassword.email,
+          fullname: updatePassword.fullname,
+          tokens: updatePassword.tokens
+        });
     } catch (error) {
       return res.status(500).send(error.message);
     }

@@ -75,6 +75,16 @@ https://vgg-career-portal.herokuapp.com/api/currentadmin
 ```
 
 
+## CHANGE ADMIN PASSWORD
+
+An Admin can change their password
+
+```
+PATCH REQUEST
+https://vgg-career-portal.herokuapp.com/api/admin/changepassword/{USER_ID}
+
+```
+
 ## LOGOUT ADMIN
 
 An Admin can log out of their account
@@ -141,6 +151,15 @@ DELETE REQUEST
 https://vgg-career-portal.herokuapp.com/api/deleteuser/{USER_ID}
 
 ```
+## CHANGE USER PASSWORD
+
+A user can change their password
+
+```
+PATCH REQUEST
+https://vgg-career-portal.herokuapp.com/api/changepassword/{USER_ID}
+
+```
 ## LOGOUT USERS
 
 A user can log out of their account
@@ -158,6 +177,7 @@ https://vgg-career-portal.herokuapp.com/api/logout
 ## CREATE JOBS
 
 Only An Admin can create jobs
+JobType can only be 'Full-time' , 'Part-time', 'Internship', 'Remote'
 
 ```
 POST REQUEST
@@ -167,12 +187,24 @@ POST REQUEST
         "jobResponsibilities":"treat patients",
         "companyInformation":"At VGG, we are a holding company",
         "JobType":"Part-time",
-        "salary": 200
+        "salary": 200,
+		location: 'Lagos
 }
 https://vgg-career-portal.herokuapp.com/api/createjob
 ```
 
+## SEARCH JOB
 
+A user can search for a Job.
+```
+
+GET REQUEST
+{
+	 "JobTitle": "soft",
+    "JobType":"full-time",
+    "location":"Lagos"
+}
+```
 ## ALL JOBS
 
 Get all jobs from this endpoint
@@ -227,7 +259,7 @@ Only An Admin can create blog post
 POST REQUEST
 {
 	 "BlogDescription":"this b log",
-      "BlogTitle":"How to get a job"
+     "BlogTitle":"How to get a job"
 }
 https://vgg-career-portal.herokuapp.com/api/createblog
 ```
