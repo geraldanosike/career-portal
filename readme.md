@@ -81,6 +81,9 @@ An Admin can change their password
 
 ```
 PATCH REQUEST
+{
+	"password":"secret"
+}
 https://vgg-career-portal.herokuapp.com/api/admin/changepassword/{USER_ID}
 
 ```
@@ -157,6 +160,9 @@ A user can change their password
 
 ```
 PATCH REQUEST
+{
+	"password":"secret"
+}
 https://vgg-career-portal.herokuapp.com/api/changepassword/{USER_ID}
 
 ```
