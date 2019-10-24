@@ -204,7 +204,7 @@ https://vgg-career-portal.herokuapp.com/api/createjob
 A user can search for a Job.
 ```
 
-GET REQUEST
+POST REQUEST
 {
 	 "JobTitle": "soft",
     "JobType":"full-time",
