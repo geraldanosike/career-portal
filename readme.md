@@ -210,6 +210,7 @@ GET REQUEST
     "JobType":"full-time",
     "location":"Lagos"
 }
+https://vgg-career-portal.herokuapp.com/api/searchjob
 ```
 ## ALL JOBS
 
@@ -218,6 +219,9 @@ Get all jobs from this endpoint
 ```
 GET REQUEST
 https://vgg-career-portal.herokuapp.com/api/jobs
+
+-- paginate jobs
+http://localhost:3000/api/jobs?limit=20&page=2
 ```
 ## GET A  JOB
 
