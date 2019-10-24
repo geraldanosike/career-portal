@@ -62,17 +62,18 @@ class userController {
       const { email, password } = req.body;
 
       const loginUsers = await User.findByCredentials(email, password);
-      const token = await loginUsers.Token();
+
       if (!loginUsers) {
         return res.status(404).send({ error: "invalid password or email" });
       }
+      const token = await loginUsers.Token();
       if (loginUsers) {
         return res
           .status(200)
           .send({ message: "Logged in successfully", token });
       }
     } catch (error) {
-      return res.status(500).send(error.message);
+      return res.status(500).send(error);
     }
   }
 

@@ -62,16 +62,16 @@ class adminController {
       const { email, password } = req.body;
 
       const loginAdmins = await Admin.findByCredentials(email, password);
+
+      if (!loginAdmins) {
+        return res.status(404).send({ error: "invalid password or email" });
+      }
       const token = await loginAdmins.Token();
 
       if (loginAdmins) {
         return res
           .status(200)
           .send({ message: "Logged in successfully", token });
-      }
-
-      if (!loginAdmins.email) {
-        return res.status(404).send({ error: "invalid password or email" });
       }
     } catch (error) {
       return res.status(500).send(error.message);
